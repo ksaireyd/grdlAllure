@@ -1,0 +1,54 @@
+plugins {
+    id "java"
+    id "io.qameta.allure" version "2.8.1"
+}
+apply plugin: 'io.qameta.allure'
+allure {
+    version = '2.8.1'
+    autoconfigure = true
+}
+group 'org.example'
+version '1.0-SNAPSHOT'
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+dependencies {
+
+    implementation("org.testng:testng:7.1.0")
+    implementation group: 'org.testng', name: 'testng', version: '7.1.0'
+    implementation group: 'io.qameta.allure', name: 'allure-testng', version: '2.13.5'
+    compile group: 'io.qameta.allure', name: 'allure-maven', version: '2.8'
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java',
+            version: '3.141.59'
+    implementation("org.uncommons:reportng:1.1.4") {
+        exclude group: "org.testng", module: "testng"
+    }
+    compile group: 'com.github.automatedowl', name: 'allure-environment-writer', version: '1.0.0'
+    implementation group: 'org.aspectj', name: 'aspectjrt', version: '1.6.10'
+    implementation group: 'org.aspectj', name: 'aspectjtools', version: '1.6.2'
+}
+test{
+    systemProperties(System.getProperties())
+    useTestNG(){
+        options.useDefaultListeners true
+        options.parallel System.getProperty('parallel', 'suites')
+        options.threadCount System.getProperty('threadCount', '1') as int
+        if (System.getProperty("includeGroups") != null) {
+            options.includeGroups System.getProperty("includeGroups")
+        }
+        if (System.getProperty("excludeGroups") != null) {
+            options.includeGroups System.getProperty("excludeGroups")
+        }
+        if (System.getProperty("suites") != null) {
+            options.suites System.getProperty("suites")
+        }
+        testLogging {
+            events = ['PASSED', 'FAILED', 'SKIPPED']
+        }
+    }
+    reports.html.enabled = true
+    reports.junitXml.enabled = true
+    reports.junitXml.destination = file("$buildDir/reports/tests/test/junitreports")
+    reports.html.destination = file("$buildDir/reports/tests/test")
+}
