@@ -1,0 +1,6 @@
+pages/BasePage.java
+ pages.BasePage
+pages/WikiPage.java
+ pages.WikiPage
+pages/SearchPage.java
+ pages.SearchPage

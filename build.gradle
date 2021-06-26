@@ -1,5 +1,7 @@
 plugins {
     id "java"
+    id "maven"
+    id "maven-publish"
     id "io.qameta.allure" version "2.8.1"
 }
 apply plugin: 'io.qameta.allure'
@@ -24,6 +26,10 @@ dependencies {
     implementation("org.uncommons:reportng:1.1.4") {
         exclude group: "org.testng", module: "testng"
     }
+    testCompile(
+            'org.testng:testng:6.8.21',
+            "ru.yandex.qatools.allure:allure-testng-adaptor:1.5.0-RC1"
+    )
     compile group: 'com.github.automatedowl', name: 'allure-environment-writer', version: '1.0.0'
     implementation group: 'org.aspectj', name: 'aspectjrt', version: '1.6.10'
     implementation group: 'org.aspectj', name: 'aspectjtools', version: '1.6.2'
@@ -31,6 +37,12 @@ dependencies {
 test{
     systemProperties(System.getProperties())
     useTestNG(){
+        suites './src/test/resources/AllureTestSuite.xml'
+//        options {
+//            listeners << 'org.uncommons.reportng.HTMLReporter'
+//            listeners << 'org.uncommons.reportng.JUnitXMLReporter'
+//        }
+//        useDefaultListeners = false
         options.useDefaultListeners true
         options.parallel System.getProperty('parallel', 'suites')
         options.threadCount System.getProperty('threadCount', '1') as int
