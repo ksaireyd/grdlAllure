@@ -13,7 +13,7 @@ public class SearchPage extends  BasePage{
 
     @FindBy(name = "q")
     private WebElement searchField;
-    @FindBy(xpath = "//a/h3[contains(text(),'Zebra')]")
+    @FindBy(xpath = "//a/h3[contains(text(),'Зебры')]")
     private WebElement wikiLink;
 
     @Step("Enter key word {0} in searching filed")

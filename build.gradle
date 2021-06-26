@@ -1,3 +1,13 @@
+
+buildscript {
+
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "io.qameta.allure:allure-gradle:2.3"}
+}
 plugins {
     id "java"
     id "maven"
@@ -5,8 +15,11 @@ plugins {
     id "io.qameta.allure" version "2.8.1"
 }
 apply plugin: 'io.qameta.allure'
+
+
+
 allure {
-    version = '2.8.1'
+    version = '2.2.1'
     autoconfigure = true
 }
 group 'org.example'
@@ -15,52 +28,34 @@ repositories {
     mavenLocal()
     mavenCentral()
 }
-dependencies {
 
+dependencies {
+    compile group: 'io.qameta.allure', name: 'allure-testng', version: '2.13.3'
     implementation("org.testng:testng:7.1.0")
-    implementation group: 'org.testng', name: 'testng', version: '7.1.0'
-    implementation group: 'io.qameta.allure', name: 'allure-testng', version: '2.13.5'
+   implementation group: 'org.testng', name: 'testng', version: '7.1.0'
+   implementation group: 'io.qameta.allure', name: 'allure-testng', version: '2.13.5'
     compile group: 'io.qameta.allure', name: 'allure-maven', version: '2.8'
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java',
-            version: '3.141.59'
+         version: '3.141.59'
     implementation("org.uncommons:reportng:1.1.4") {
         exclude group: "org.testng", module: "testng"
     }
-    testCompile(
-            'org.testng:testng:6.8.21',
-            "ru.yandex.qatools.allure:allure-testng-adaptor:1.5.0-RC1"
-    )
+    dependencies {
+        testImplementation('io.qameta.allure:allure-selenide:2.10.0')
+    }
     compile group: 'com.github.automatedowl', name: 'allure-environment-writer', version: '1.0.0'
     implementation group: 'org.aspectj', name: 'aspectjrt', version: '1.6.10'
     implementation group: 'org.aspectj', name: 'aspectjtools', version: '1.6.2'
+
 }
+
 test{
     systemProperties(System.getProperties())
-    useTestNG(){
-        suites './src/test/resources/AllureTestSuite.xml'
-//        options {
-//            listeners << 'org.uncommons.reportng.HTMLReporter'
-//            listeners << 'org.uncommons.reportng.JUnitXMLReporter'
-//        }
-//        useDefaultListeners = false
-        options.useDefaultListeners true
-        options.parallel System.getProperty('parallel', 'suites')
-        options.threadCount System.getProperty('threadCount', '1') as int
-        if (System.getProperty("includeGroups") != null) {
-            options.includeGroups System.getProperty("includeGroups")
-        }
-        if (System.getProperty("excludeGroups") != null) {
-            options.includeGroups System.getProperty("excludeGroups")
-        }
-        if (System.getProperty("suites") != null) {
-            options.suites System.getProperty("suites")
-        }
+    useTestNG()
+
         testLogging {
             events = ['PASSED', 'FAILED', 'SKIPPED']
         }
-    }
-    reports.html.enabled = true
-    reports.junitXml.enabled = true
-    reports.junitXml.destination = file("$buildDir/reports/tests/test/junitreports")
-    reports.html.destination = file("$buildDir/reports/tests/test")
+
+
 }
